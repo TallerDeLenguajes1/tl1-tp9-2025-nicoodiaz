@@ -32,8 +32,7 @@ foreach (string directorios in nombreDirectorios)
 
 //Creo la lista de string para poder guardar la info de cada archivo y despues escribir esto en el CSV
 List<string> lineasParaCSV = new List<string>();
-//Añado esta linea, como para poder tener una referencia de que es cada columna
-lineasParaCSV.Add("Nombre del archivo; Tamanio en KB; Fecha ult. modificacion");
+
 
 //Para poder acceder a la info de los archivos
 string[] nombreArchivos = Directory.GetFiles(rutaDirectorio);
@@ -47,5 +46,14 @@ foreach (string archivos in nombreArchivos)
 Console.ResetColor();
 //Creo la ruta del archivo
 string rutaCSV = @$"{rutaDirectorio}/reporte_archivos.csv";
+//Si el archivo no existe, le agrego el encabezado
+if (!File.Exists(rutaCSV))
+{
+    //Añado esta linea, como para poder tener una referencia de que es cada columna
+    File.AppendAllText(rutaCSV, "Nombre del archivo; Tamanio en KB; Fecha ult. modificacion"); //Solo escribe el texto este metodo "AppendAllText"
+}
+//Agrega las lineas de texto, sin necesidad de borrar lo que ya estaba escrito, osea que agrega al final 
+File.AppendAllLines(rutaCSV, lineasParaCSV.Skip(1)); //Skip, sirve para no repetir el encabezado
+
 //Escribo en el archivo las lineas, pasandole la lista
-File.WriteAllLines(rutaCSV, lineasParaCSV);
+//File.WriteAllLines(rutaCSV, lineasParaCSV); // Esto sirve para borrar el contenido anterior y escribir nuevamente, osea como que se "pierde el historial de archivos"
